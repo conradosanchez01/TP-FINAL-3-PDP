@@ -7,6 +7,7 @@ export type Predicado = (t: Tarea) => boolean;
 // 1 predicados simples
 //funciones flecha que chequean una sola cosa
 export const esDificil: Predicado = (t) => t.dificultad === 'd';
+export const esIntermedia: Predicado = (t) => t.dificultad === 'i';
 export const esFacil: Predicado = (t) => t.dificultad === 'f';
 
 export const estaPendiente: Predicado = (t) => t.estado === 'p';

@@ -20,6 +20,6 @@ export const EstadoLabels: Record<Estado, string> = {
 
 export const DificultadLabels: Record<Dificultad, string> = {
     f: "Facil",
-    i: "Intermedio",
+    i: "Intermedia",
     d: "Dificil"
 };

@@ -29,26 +29,19 @@ async function main() {
         console.log("2. Agregar Tarea");
         console.log("3. Eliminar Tarea");
         console.log("4. Editar Tarea");
+        console.log("5. Buscar Tarea por ID");
         console.log("0. Salir");
 
         const opcion = await input("Seleccione una opcion: ");
 
         switch (opcion) {
-            case "1":
-                await menuListar();
-                break;
-            case "2":
-                await menuAgregar();
-                break;
-            case "3":
-                await menuEliminar();
-                break;
-            case "4": 
-            await menuEditar(); 
-            break;
-            case "0":
-                salir = true;
-                break;
+            case "1":   await menuListar();      break;
+            case "2":   await menuAgregar();     break;
+            case "3":   await menuEliminar();    break;
+            case "4":    await menuEditar();     break;
+            case "5":    await menuBuscarPorId(); break;
+            case "0":   salir = true;       break;
+
             default:
                 console.log("Opcion no valida");
                 await esperarEnter();
@@ -70,13 +63,14 @@ async function menuListar() {
     console.log("2. Por Dificultad (Facil -> Dificil)");
     console.log("3. Por Fecha de Creación (Viejo -> Nuevo)");
     
-    const opOrden = await input("Opcion de orden: ");
+    const opOrden = await input("Opcion de orden (Predeterminado por fecha de creacion): ");
     let estrategia: EstrategiaOrdenamiento;
 
     // Polimorfismo: Asignamos diferentes objetos que cumplen la misma interfaz
     switch (opOrden) { 
-        case "1": estrategia = new OrdenarPorDificultad(); break;
-        case "2": estrategia = new OrdenarPorTitulo(); break;
+        
+        case "1": estrategia = new OrdenarPorTitulo(); break;
+        case "2": estrategia = new OrdenarPorDificultad(); break;
         case"3":
      default:  estrategia = new OrdenarPorFechaCreacion(); break;
     }
@@ -88,7 +82,7 @@ async function menuListar() {
     console.log("3. Solo Difíciles");
     console.log("4. Tareas CRÍTICAS (Pendientes Y Difíciles)"); 
 
-    const opFiltro = await input("Opción de filtro: ");
+    const opFiltro = await input("Opción de filtro (Predeterminado muestra todo sin filtrar): ");
     let predicado: Predicado | undefined;
 
     switch (opFiltro) {
@@ -110,6 +104,7 @@ async function menuListar() {
         tareas.forEach(t => {
             
             console.log(`[ID: ${t.id}] ${t.toString()}`);
+
         });
     }
     await esperarEnter();
@@ -128,11 +123,11 @@ async function menuAgregar() {
     }
     const desc = await input("Descripcion: ");
     
-    const estadoInput = await input("Estado (p/e/t/c) [p]: ");
-    // validacion de dificultad
+    const estadoInput = await input("Estado (p/e/t/c) e=En curso t=Terminada c=Cancelada [p] = (predeterminado) pendiente : ");
+    
     const estado = (["p","e","t","c"].includes(estadoInput) ? estadoInput : "p") as Estado;
-
-    const difInput = await input("Dificultad (f/i/d) [f]: ");
+// validacion de dificultad
+    const difInput = await input("Dificultad (f/i/d) i=Intermedia d=Dificil [f] =  (predeterminado) facil : ");
     const dificultad = (["f","i","d"].includes(difInput) ? difInput : "f") as Dificultad;
 
   // creamos el objeto tarea 
@@ -219,5 +214,29 @@ async function menuEditar() {
     console.log(`Resultante: ${tarea.toString()}`);
     await esperarEnter();
 }
+
+async function menuBuscarPorId() {
+    console.clear();
+    console.log("--- BUSCAR TAREA POR ID ---");
+    const id = await input("Ingresa el ID exacto de la tarea: ");
+    
+    // Trabajo del gestor
+    const tarea = gestor.obtenerPorId(id);
+
+    if (tarea) {console.log(`=== DETALLE DE LA TAREA ===
+        ID:          ${tarea.id}
+        Título:      ${tarea.titulo}
+        Descripción: ${tarea.descripcion || "(Sin descripción)"}
+        Estado:      ${tarea.estado.toUpperCase()}
+        Dificultad:  ${tarea.dificultad.toUpperCase()}
+        Fecha Creac: ${tarea.fechaCreacion.toLocaleString()}
+      `);
+    } else {
+
+        console.log("\nNo se encontró ninguna tarea activa con ese ID.");
+    }
+    await esperarEnter();
+}
+
 // Arranca la app
 main();

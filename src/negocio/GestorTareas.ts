@@ -34,7 +34,7 @@ export class GestorTareas {
         return this.tareas.find(t => t.id === id && t.estaActiva);
     }
 
-    // Eliminacion Logica o Soft Delete no borra solo cambia como inactivo
+    // Eliminacion Soft Delete no borra solo cambia como inactivo
     eliminarTarea(id: string): boolean {
         const tarea = this.obtenerPorId(id);
         if (tarea) {

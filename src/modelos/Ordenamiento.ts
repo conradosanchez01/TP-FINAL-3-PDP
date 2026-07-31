@@ -22,13 +22,13 @@ export class OrdenarPorFechaCreacion implements EstrategiaOrdenamiento {
     }
 }
 
-// 4. Estrategia: ordena por dificultad (facil -> intermedio -> dificil)
+// 4. Estrategia: ordena por dificultad (facil -> intermedia -> dificil)
 export class OrdenarPorDificultad implements EstrategiaOrdenamiento {
     ordenar(tareas: Tarea[]): Tarea[] {
         // le damos un valor numerico a cada dificultad para poder comparar
         const pesos: Record<Dificultad, number> = {
             'f': 1, // facil vale 1
-            'i': 2, // intermedio vale 2
+            'i': 2, // intermedia vale 2
             'd': 3  // dificil vale 3
         };
 
