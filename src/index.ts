@@ -14,7 +14,7 @@ import {
     esCritica, 
     Predicado 
 } from "./utilidades/Predicados";
-import { Estado, Dificultad } from "./modelos/Tipos";
+import { Estado, Dificultad, EstadoLabels, DificultadLabels } from "./modelos/Tipos";
 
 // Instancias el gestor
 const gestor = new GestorTareas();
@@ -130,8 +130,13 @@ async function menuAgregar() {
     const difInput = await input("Dificultad (f/i/d) i=Intermedia d=Dificil [f] =  (predeterminado) facil : ");
     const dificultad = (["f","i","d"].includes(difInput) ? difInput : "f") as Dificultad;
 
+// fecha de vencimiento
+const vencimientoInput = await pedirFechaValida("Fecha de vencimiento (AAAA-MM-DD) o presiona Enter para omitir: ");
+// Si apretó Enter (undefined) o puso 0 (null), queda en null. Sino, guarda la fecha.
+    const vencimiento = vencimientoInput === undefined ? null : vencimientoInput;
+
   // creamos el objeto tarea 
-    const nuevaTarea = new Tarea(titulo, desc, estado, dificultad);
+    const nuevaTarea = new Tarea(titulo, desc, estado, dificultad,vencimiento);
     //y lo mandamos al gestor
     gestor.agregarTarea(nuevaTarea);
     console.log("Tarea agregada con exito!");
@@ -188,7 +193,7 @@ async function menuEditar() {
     }
 
     // 3 EDITAR ESTADO
-    console.log(`Estado actual: ${tarea.estado.toUpperCase()}`);
+  console.log(`Estado actual: ${EstadoLabels[tarea.estado]}`);
     const nuevoEstadoInput = await input("Nuevo estado (p/e/t/c): ");
     if (nuevoEstadoInput.trim() !== "") {
         if (["p", "e", "t", "c"].includes(nuevoEstadoInput)) {
@@ -199,7 +204,7 @@ async function menuEditar() {
     }
 
     // 4 EDITAR DIFICULTAD
-    console.log(`Dificultad actual: ${tarea.dificultad.toUpperCase()}`);
+   console.log(`Dificultad actual: ${DificultadLabels[tarea.dificultad]}`);
     const nuevaDifInput = await input("Nueva dificultad (f/i/d): ");
     if (nuevaDifInput.trim() !== "") {
         if (["f", "i", "d"].includes(nuevaDifInput)) {
@@ -208,6 +213,21 @@ async function menuEditar() {
             console.log(" Dificultad inválida, se mantiene la anterior.");
         }
     }
+
+// 5 EDITAR VENCIMIENTO
+const vencActual = tarea.fechaVencimiento 
+        ? tarea.fechaVencimiento.toLocaleDateString() 
+        : "(Sin vencimiento)";
+    console.log(`Vencimiento actual: ${vencActual}`);
+    
+    // Le pasamos un aviso de que si presiona Enter se mantiene ,0 se borra el vencimiento.
+    const nuevaFecha = await pedirFechaValida("Nuevo vencimiento (AAAA-MM-DD) o Enter para mantener, o '0' para borrar: ");
+    // Actualizamos usando el setter que creamos en Tarea.ts
+   // Solo actualizamos si el usuario NO apretó Enter
+    if (nuevaFecha !== undefined) {
+        tarea.fechaVencimiento = nuevaFecha; 
+    }
+
 
     console.log("\nTarea actualizada correctamente!");
     // Mostramos como quedo
@@ -222,14 +242,20 @@ async function menuBuscarPorId() {
     
     // Trabajo del gestor
     const tarea = gestor.obtenerPorId(id);
+   
 
-    if (tarea) {console.log(`=== DETALLE DE LA TAREA ===
+    if (tarea){
+         const vencimientoStr = tarea.fechaVencimiento 
+            ? tarea.fechaVencimiento.toLocaleDateString() 
+            : "(Sin límite)";
+       console.log(`=== DETALLE DE LA TAREA ===
         ID:          ${tarea.id}
         Título:      ${tarea.titulo}
         Descripción: ${tarea.descripcion || "(Sin descripción)"}
-        Estado:      ${tarea.estado.toUpperCase()}
-        Dificultad:  ${tarea.dificultad.toUpperCase()}
+        Estado:      ${EstadoLabels[tarea.estado]}
+        Dificultad:  ${DificultadLabels[tarea.dificultad]}
         Fecha Creac: ${tarea.fechaCreacion.toLocaleString()}
+        Vencimiento: ${vencimientoStr}
       `);
     } else {
 
@@ -238,5 +264,36 @@ async function menuBuscarPorId() {
     await esperarEnter();
 }
 
+
+// --- FUNCIÓN VALIDADORA DE FECHAS  ---
+async function pedirFechaValida(mensaje: string): Promise<Date | null | undefined> {
+    while (true) {
+        const inputFecha = await input(mensaje);
+        
+        // Si aprieta Enter sin escribir nada, retorna undefined 
+        if (inputFecha.trim() === "") return undefined; 
+
+        // Si escribe un "0", retorna null (significa "quiero borrar la fecha")
+        if (inputFecha.trim() === "0") return null;
+
+        // Validamos que el texto tenga el formato AAAA-MM-DD
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(inputFecha)) {
+            console.log(" Formato inválido. Por favor usa AAAA-MM-DD (ej: 2026-12-25).");
+            continue;
+        }
+
+        // Le agregamos T12:00:00 para forzar el mediodía y evitar que, por zona horaria, se corra al día anterior
+        const fecha = new Date(inputFecha + "T12:00:00"); 
+
+        // Verificamos si JavaScript pudo crear una fecha real (evita que pongan 2026-15-32)
+        if (isNaN(fecha.getTime())) {
+            console.log(" Fecha inexistente. Intenta de nuevo.");
+            continue;
+        }
+
+        return fecha; // Si pasó todas las pruebas, devolvemos el objeto Date
+    }
+}
 // Arranca la app
 main();

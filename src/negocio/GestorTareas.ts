@@ -1,7 +1,10 @@
 // src/negocio/GestorTareas.ts
 import { Tarea } from "../modelos/Tarea";
 import { EstrategiaOrdenamiento } from "../modelos/Ordenamiento";
-
+/**
+ * Administra la colección principal de tareas en memoria.
+ * Es responsable de aplicar búsquedas, filtros lógicos y delegar los ordenamientos.
+ */
 export class GestorTareas {
     //lista
     private tareas: Tarea[] = [];
@@ -12,6 +15,14 @@ export class GestorTareas {
     }
 
     // busca, filtra y ordena la lsita
+    /**
+     * Busca tareas activas aplicando una estrategia de ordenamiento y un filtro opcional.
+     * Combina programación funcional (filter) con polimorfismo (estrategia).
+     * 
+     * @param estrategia - Objeto que cumple el contrato de EstrategiaOrdenamiento.
+     * @param predicado - Función lógica opcional que evalúa si una tarea debe incluirse.
+     * @returns Un arreglo de tareas filtrado y ordenado.
+     */
     buscarTareas(
         //hay que pasarle una instancia de una clase que compla el contrato de ordenar
         estrategia: EstrategiaOrdenamiento, 
@@ -30,6 +41,11 @@ export class GestorTareas {
     }
 
     // obteniene una tarea por ID
+    /**
+     * Busca una tarea específica mediante su identificador único.
+     * @param id - El identificador numérico (en formato string) de la tarea.
+     * @returns La instancia de la Tarea si existe y está activa, o undefined en caso contrario.
+     */
     obtenerPorId(id: string): Tarea | undefined {
         return this.tareas.find(t => t.id === id && t.estaActiva);
     }

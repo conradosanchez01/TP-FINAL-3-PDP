@@ -1,6 +1,11 @@
 // src/modelos/Tarea.ts
 import { Estado, Dificultad, EstadoLabels, DificultadLabels } from "./Tipos";
 
+
+/**
+ * Representa una entidad de Tarea dentro del sistema.
+ * Encapsula el estado, la información y el comportamiento de una tarea individual.
+ */
 export class Tarea {
     // Al ser static funciona como un contador global dentro de la clase
     private static secuenciaId = 0;
@@ -14,7 +19,14 @@ export class Tarea {
     private _fechaCreacion: Date;
     private _fechaVencimiento: Date | null;
     private _activo: boolean; 
-
+/**
+     * Crea una nueva instancia de Tarea.
+     * @param titulo - El título descriptivo de la tarea.
+     * @param descripcion - Detalles adicionales sobre lo que se debe hacer.
+     * @param estado - Estado actual (por defecto "p" - Pendiente).
+     * @param dificultad - Nivel de complejidad (por defecto "f" - Fácil).
+     * @param vencimiento - Fecha límite opcional (Date o null).
+     */
     constructor(
         titulo: string,
         descripcion: string,
@@ -62,8 +74,13 @@ export class Tarea {
         this._descripcion = nuevaDesc;
     }
 
+    set fechaVencimiento(nuevaFecha: Date | null) {
+        this._fechaVencimiento = nuevaFecha;
+    }
     // --- METODOS
-    // Eliminacion logica
+    /**
+     * Realiza un borrado lógico (Soft Delete) de la tarea, marcándola como inactiva.
+     */
     eliminar(): void {
         this._activo = false;
     }
@@ -75,6 +92,7 @@ export class Tarea {
     toString(): string {
         const estadoStr = EstadoLabels[this._estado];
         const difStr = DificultadLabels[this._dificultad];
-        return `${this._titulo} [${estadoStr}] - Dificultad: ${difStr}`;
+        return `Titulo: ${this._titulo} - Estado: ${estadoStr} - Dificultad: ${difStr}`;
+   
     }
 }
