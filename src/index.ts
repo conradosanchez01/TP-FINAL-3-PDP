@@ -30,6 +30,7 @@ async function main() {
         console.log("3. Eliminar Tarea");
         console.log("4. Editar Tarea");
         console.log("5. Buscar Tarea por ID");
+        console.log("6. Restaurar Tarea Eliminada");
         console.log("0. Salir");
 
         const opcion = await input("Seleccione una opcion: ");
@@ -40,6 +41,7 @@ async function main() {
             case "3":   await menuEliminar();    break;
             case "4":    await menuEditar();     break;
             case "5":    await menuBuscarPorId(); break;
+            case "6":    await menuRestaurar();   break;
             case "0":   salir = true;       break;
 
             default:
@@ -295,5 +297,22 @@ async function pedirFechaValida(mensaje: string): Promise<Date | null | undefine
         return fecha; // Si pasó todas las pruebas, devolvemos el objeto Date
     }
 }
+async function menuRestaurar() {
+    console.clear();
+    console.log("--- RESTAURAR TAREA ---");
+    const id = await input("Ingresa el ID de la tarea eliminada: ");
+    
+    // Le pedimos al gestor que la restaure
+    const exito = gestor.restaurarTarea(id);
+
+    if (exito) {
+        console.log("Tarea restaurada con éxito! Ya vuelve a aparecer en las listas.");
+    } else {
+        console.log("No se encontró ninguna tarea eliminada con ese ID.");
+    }
+    await esperarEnter();
+}
+
+
 // Arranca la app
 main();

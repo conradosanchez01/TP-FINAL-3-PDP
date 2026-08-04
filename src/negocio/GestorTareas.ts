@@ -60,5 +60,18 @@ export class GestorTareas {
         return false;
     }
     
+    // Restauración de tarea eliminada lógicamente
+    restaurarTarea(id: string): boolean {
+        // Buscamos específicamente una que NO esté activa
+        const tarea = this.tareas.find(t => t.id === id && !t.estaActiva);
+        if (tarea) { //objeto con datos es considerado Truthy (tiene existencia,entra) o falsy undefined (no existe, no tiene nada, no entra)
+            tarea.restaurar(); // Llama al método de Tarea.ts
+            return true;
+        }
+        return false; // No se encontró la tarea o ya estaba activa
+    }
+
+
+
     
 }
