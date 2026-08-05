@@ -24,7 +24,7 @@ async function main() {
 
     while (!salir) {
         console.clear();
-        console.log("=== GESTOR MULTIPARADIGMA ===");
+        console.log("=== GESTOR DE TAREAS ===");
         console.log("1. Ver Tareas (Listar/Filtrar/Ordenar)");
         console.log("2. Agregar Tarea");
         console.log("3. Eliminar Tarea");
@@ -125,11 +125,11 @@ async function menuAgregar() {
     }
     const desc = await input("Descripcion: ");
     
-    const estadoInput = await input("Estado (p/e/t/c) e=En curso t=Terminada c=Cancelada [p] = (predeterminado) pendiente : ");
+    const estadoInput = (await input("Estado (p/e/t/c) e=En curso t=Terminada c=Cancelada [p] = (predeterminado) pendiente : ")).toLowerCase();
     
     const estado = (["p","e","t","c"].includes(estadoInput) ? estadoInput : "p") as Estado;
 // validacion de dificultad
-    const difInput = await input("Dificultad (f/i/d) i=Intermedia d=Dificil [f] =  (predeterminado) facil : ");
+    const difInput = (await input("Dificultad (f/i/d) i=Intermedia d=Dificil [f] =  (predeterminado) facil : ")).toLowerCase();
     const dificultad = (["f","i","d"].includes(difInput) ? difInput : "f") as Dificultad;
 
 // fecha de vencimiento
@@ -196,7 +196,8 @@ async function menuEditar() {
 
     // 3 EDITAR ESTADO
   console.log(`Estado actual: ${EstadoLabels[tarea.estado]}`);
-    const nuevoEstadoInput = await input("Nuevo estado (p/e/t/c): ");
+    const nuevoEstadoInput = (await input("Nuevo estado (p/e/t/c): ")).toLowerCase();
+
     if (nuevoEstadoInput.trim() !== "") {
         if (["p", "e", "t", "c"].includes(nuevoEstadoInput)) {
             tarea.estado = nuevoEstadoInput as Estado;
@@ -207,7 +208,7 @@ async function menuEditar() {
 
     // 4 EDITAR DIFICULTAD
    console.log(`Dificultad actual: ${DificultadLabels[tarea.dificultad]}`);
-    const nuevaDifInput = await input("Nueva dificultad (f/i/d): ");
+    const nuevaDifInput = (await input("Nueva dificultad (f/i/d): ")).toLowerCase();
     if (nuevaDifInput.trim() !== "") {
         if (["f", "i", "d"].includes(nuevaDifInput)) {
             tarea.dificultad = nuevaDifInput as Dificultad;

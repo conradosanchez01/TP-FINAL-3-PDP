@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 
 export function input(question: string, trim = true): Promise<string> {
   return new Promise((resolve) => {
-    rl.question(question, (answer) => resolve(trim ? answer.trim() : answer));
+   rl.question(question, (answer: string) => resolve(trim ? answer.trim() : answer));
   });
 }
 

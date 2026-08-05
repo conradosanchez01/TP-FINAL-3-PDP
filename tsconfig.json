@@ -9,10 +9,12 @@
     "strict": true,
     "skipLibCheck": true,
     
-    /* Configuración de Directorios (Opcional pero recomendada) */
-    "outDir": "./dist",        
+    /* --- LAS 3 LÍNEAS NUEVAS PARA LIMPIAR LOS ERRORES --- */
+    "outDir": "./dist",
+    "rootDir": "./src", 
+    "types": ["node"],
+    "ignoreDeprecations": "6.0",
     
-    /* ESTA LÍNEA EVITA EL ERROR ANTERIOR */
     "verbatimModuleSyntax": false
   },
   "include": ["**/*.ts"],

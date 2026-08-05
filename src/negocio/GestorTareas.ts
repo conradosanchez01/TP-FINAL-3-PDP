@@ -27,8 +27,7 @@ export class GestorTareas {
         //hay que pasarle una instancia de una clase que compla el contrato de ordenar
         estrategia: EstrategiaOrdenamiento, 
         //predicado opcional,
-        predicado?: (t: Tarea) => boolean  
-    ): Tarea[] {
+        predicado?: (t: Tarea) => boolean   ): Tarea[] {
         // 1 filtra las inactivas/borradas
         let resultado = this.tareas.filter(t => t.estaActiva);
 
